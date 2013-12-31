@@ -1,4 +1,4 @@
-(ns cavy.session
+(ns cavy
   "Represents a persistent browser session that can be queried and controlled.")
 
 (defn click-button
