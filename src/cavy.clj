@@ -1,5 +1,11 @@
 (ns cavy
-  "Represents a persistent browser session that can be queried and controlled.")
+  "Represents a persistent browser session that can be queried and controlled."
+  (:require [cavy.session :as session]))
+
+(defn session
+  "Creates a new Cavy session."
+  [& options]
+  (apply session/create options))
 
 (defn click-button
   "Clicks on a button."
