@@ -1,6 +1,7 @@
 (ns cavy
   "Represents a persistent browser session that can be queried and controlled."
-  (:require [cavy.session :as session]))
+  (:require [cavy.session :as session]
+            [cavy.util :as util]))
 
 (defn session
   "Creates a new Cavy session."
@@ -49,5 +50,7 @@
 
 (defn visit
   "Navigates to the specified URL."
-  [session url]
-  session)
+  [session url & params]
+  (session/request session
+                   :get url
+                   :query-params (apply util/to-query-params params)))

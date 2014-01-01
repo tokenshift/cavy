@@ -5,4 +5,5 @@
             :url "https://raw.github.com/tokenshift/cavy/master/LICENSE"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [clj-http "0.7.8"]
-                 [com.cemerick/url "0.1.0"]])
+                 [com.cemerick/url "0.1.0"]
+                 [enlive "1.1.5"]])
