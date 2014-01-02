@@ -2,6 +2,14 @@
   "General utility functions."
   (:require [cemerick.url :as url]))
 
+(defn in-str?
+  "Checks whether a string contains the specified text."
+  [string text]
+  (when string
+    (if (instance? String string)
+      (.contains string text)
+      (throw (IllegalArgumentException. "Input was not a string.")))))
+
 (defn to-query-params
   "Converts a list of key-value pairs into a query parameters map."
   ([] {})
