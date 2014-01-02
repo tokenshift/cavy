@@ -1,7 +1,9 @@
 (ns cavy.session
   "The core Cavy session state."
-  (:require [cavy.cookies :as cookies]
+  (:require [clojure.string :as str]
+            [cavy.cookies :as cookies]
             [cavy.http :as http]
+            [clojurewerkz.urly.core :as urly]
             [net.cgrand.enlive-html :as html])
   (:use cavy.util))
 
@@ -34,11 +36,16 @@
   "Sends an HTTP request to the specified URL."
   [session method url & options]
   (let [response (http/request (session :client)
-                method
-                url
-                (apply hash-map options))]
+                               method url
+                               (apply hash-map options))]
     (assoc session
            :location url
            :response response
            :status (:status response)
            :page (when (is-html response) (parse-html response)))))
+
+(defn absolute-url
+  "Constructs an absolute URL given the current location and a relative path."
+  [session & path]
+  (println "Path:" path)
+  (urly/resolve "http://example.com/" (str/join "/" path)))

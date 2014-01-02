@@ -2,6 +2,15 @@
   "General utility functions."
   (:require [cemerick.url :as url]))
 
+(defn first-where-map
+  "Selects the first element of a sequence where the mapped value matches the
+  predicate."
+  [seq fun pred]
+  (first
+    (filter
+      #(pred (fun %))
+      seq)))
+
 (defn in-str?
   "Checks whether a string contains the specified text."
   [string text]
