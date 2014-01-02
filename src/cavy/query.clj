@@ -3,6 +3,16 @@
   (:require [net.cgrand.enlive-html :as enlive])
   (:use cavy.util))
 
+(defn find-label
+  "Locates a label with the specified text."
+  [page text]
+  (first (enlive/select
+           page
+           [[:label
+             (enlive/has
+               [(enlive/text-pred #(.startsWith (.trim %) text))])]])))
+  
+
 (defn find-link
   "Locates a link within the page."
   [page target]
