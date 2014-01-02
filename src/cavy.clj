@@ -1,6 +1,7 @@
 (ns cavy
   "Represents a persistent browser session that can be queried and controlled."
-  (:require [cavy.session :as session]
+  (:require [cavy.query :as query]
+            [cavy.session :as session]
             [cavy.util :as util]))
 
 (defn session
@@ -8,13 +9,24 @@
   [& options]
   (apply session/create options))
 
-(defn press
-  "Presses a button."
-  [session target]
-  session)
+(defn visit
+  "Navigates to the specified URL."
+  [session url & params]
+  (session/request session
+                   :get (session/absolute-url session url)
+                   :query-params (apply util/to-query-params params)))
 
 (defn click
   "Clicks on a link."
+  [session target]
+  (let [page (session :page)
+        link (query/find-link page target)
+        url (get-in link [:attrs :href])]
+    (println "Link:" link "URL:" url)
+    (visit session url)))
+
+(defn press
+  "Presses a button."
   [session target]
   session)
 
@@ -42,10 +54,3 @@
   "Selects options in a radio group or dropdown."
   [session target & values]
   session)
-
-(defn visit
-  "Navigates to the specified URL."
-  [session url & params]
-  (session/request session
-                   :get url
-                   :query-params (apply util/to-query-params params)))
