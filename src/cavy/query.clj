@@ -11,7 +11,17 @@
            [[:label
              (enlive/has
                [(enlive/text-pred #(.startsWith (.trim %) text))])]])))
-  
+
+(defn find-by-label
+  "Locates an element by its label text."
+  [page label-text]
+  (if-let [label (find-label page label-text)]
+    (if-let [label-for (get-in label [:attrs :for])]
+      (first (enlive/select page [(enlive/id= label-for)]))
+      (if-let [label-id (get-in label [:attrs :id])]
+        (first (enlive/select page [(enlive/attr= :aria-labelledby label-id)]))
+        nil))
+    (first (enlive/select page [(enlive/attr= :aria-label label-text)]))))
 
 (defn find-link
   "Locates a link within the page."

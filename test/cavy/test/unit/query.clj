@@ -14,6 +14,17 @@
     (let [label (query/find-label page "Field 2")]
       (is (= "label2" (get-in label [:attrs :id]))))))
 
+(deftest find-by-label
+  (testing "label for"
+    (let [field (query/find-by-label page "Field 1")]
+      (is (= "field1" (get-in field [:attrs :id])))))
+  (testing "labelled by"
+    (let [field (query/find-by-label page "Field 2")]
+      (is (= "label2" (get-in field [:attrs :aria-labelledby])))))
+  (testing "label"
+    (let [field (query/find-by-label page "Field 3")]
+      (is (= "Field 3" (get-in field [:attrs :aria-label]))))))
+
 (deftest find-link
   (testing "by text"
     (let [link (query/find-link page "Link 4")]
