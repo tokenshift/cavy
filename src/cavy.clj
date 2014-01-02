@@ -1,6 +1,7 @@
 (ns cavy
   "Represents a persistent browser session that can be queried and controlled."
-  (:require [cavy.query :as query]
+  (:require [cavy.interact :as interact]
+            [cavy.query :as query]
             [cavy.session :as session]
             [cavy.util :as util]))
 
@@ -30,11 +31,11 @@
   ; TODO
   session)
 
-(comment defn fill-in
+(defn fill-in
   "Fills in the specified input field."
   [session target text]
   (let [page (session :page)]
-    (assoc session :page (interact/set-value page target text))))
+    (assoc session :page (interact/set-field-value page target text))))
 
 (defn check
   "Checks a checkbox."
