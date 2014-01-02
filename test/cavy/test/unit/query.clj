@@ -6,6 +6,14 @@
 (def page
   (enlive/html-snippet (slurp "test/cavy/test/test-pages/query-tests.html")))
 
+(deftest find-label
+  (testing "without colon"
+    (let [label (query/find-label page "Field 1")]
+      (is (= "field1" (get-in label [:attrs :for])))))
+  (testing "with colon"
+    (let [label (query/find-label page "Field 2")]
+      (is (= "label2" (get-in label [:attrs :id]))))))
+
 (deftest find-link
   (testing "by text"
     (let [link (query/find-link page "Link 4")]

@@ -27,29 +27,35 @@
 (defn press
   "Presses a button."
   [session target]
+  ; TODO
   session)
 
-(defn fill-in
+(comment defn fill-in
   "Fills in the specified input field."
-  [session target value]
-  session)
+  [session target text]
+  (let [page (session :page)]
+    (assoc session :page (interact/set-value page target text))))
 
 (defn check
   "Checks a checkbox."
   [session target]
+  ; TODO
   session)
 
 (defn uncheck
   "Unchecks a checkbox."
   [session target]
+  ; TODO
   session)
 
 (defn toggle
   "Toggles the checkbox state."
   [session target]
+  ; TODO
   session)
 
 (defn select
   "Selects options in a radio group or dropdown."
   [session target & values]
+  ; TODO
   session)
