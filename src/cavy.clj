@@ -22,7 +22,6 @@
   (let [page (session :page)
         link (query/find-link page target)
         url (get-in link [:attrs :href])]
-    (println "Link:" link "URL:" url)
     (visit session url)))
 
 (defn press
