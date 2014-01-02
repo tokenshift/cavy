@@ -16,17 +16,3 @@
       (web/request (merge {:method method
                            :url url}
                           options)))))
-
-(defn test-client
-  "Records requests without sending them anywhere."
-  [& [response]]
-  (let [req (atom nil)]
-    (reify Client
-      (request [this method url]
-        (request this method url nil))
-      (request [this method url options]
-        (dosync
-          (swap! req {:method method
-                      :url url
-                      :options options}))
-        response))))

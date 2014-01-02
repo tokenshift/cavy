@@ -2,7 +2,8 @@
   "The core Cavy session state."
   (:require [cavy.cookies :as cookies]
             [cavy.http :as http]
-            [net.cgrand.enlive-html :as html]))
+            [net.cgrand.enlive-html :as html])
+  (:use cavy.util))
 
 (defn create
   "Creates a new session."
@@ -22,7 +23,7 @@
 (defn- is-html
   "Checks whether the HTTP response body is HTML."
   [response]
-  (.contains ((response :headers) "content-type") "text/html"))
+  (in-str? (get-in response [:headers "content-type"]) "text/html"))
 
 (defn- parse-html
   "Parses the HTML body of an HTTP response."
@@ -39,5 +40,5 @@
     (assoc session
            :location url
            :response response
-           :status (response :status)
+           :status (:status response)
            :page (when (is-html response) (parse-html response)))))
