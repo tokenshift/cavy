@@ -1,5 +1,6 @@
 (ns cavy.test.functional.api
-  (:require cavy)
+  (:require [net.cgrand.enlive-html :as enlive]
+            cavy)
   (:use clojure.test
         cavy.test.functional.session))
 
@@ -33,3 +34,13 @@
     (-> (test-session "http://example.com/link1.html")
         (cavy/click "external")
         (went-to "http://example2.com/link.html"))))
+
+(deftest fill-in
+  (let [result (-> (test-session "http://example.com/login.html")
+                   (cavy/fill-in "Username" "test-user")
+                   (cavy/fill-in "Password" "test-password"))
+        page (result :page)
+        username (first (enlive/select page [:#username]))
+        password (first (enlive/select page [:#password]))]
+    (is (= "test-user" (get-in username [:attrs :value])))
+    (is (= "test-password" (get-in password [:attrs :value])))))
