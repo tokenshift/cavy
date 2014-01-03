@@ -4,10 +4,15 @@
             [cavy.session :as session]
             [cavy.http :as http]))
 
-(def client
+(defn test-client
+  "Constructs a test client that will record the last request in an atom."
+  [req-ref]
   (reify http/Client
     (request [this method url] (http/request this method url nil))
     (request [this method url options]
+      (dosync (ref-set req-ref {:method method
+                                :url url
+                                :options options}))
       (let [url (urls/url url)
             path (:path url)]
         (try
@@ -22,5 +27,7 @@
 (defn test-session
   "Create a new test session."
   [& [start-page]]
-  (-> (session/create :client client)
-      (session/request :get start-page)))
+  (let [req-ref (ref nil)]
+    (-> (session/create :client (test-client req-ref))
+        (assoc :last-request req-ref)
+        (session/request :get start-page))))
