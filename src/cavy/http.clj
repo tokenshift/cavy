@@ -6,13 +6,17 @@
   (request [this method url]
            [this method url options]))
 
-(def client
+(defn create-client
   "Uses clj-http to make HTTP requests."
-  (reify Client
-    (request [this method url]
-      (web/request {:method method
-                    :url url}))
-    (request [this method url options]
-      (web/request (merge {:method method
-                           :url url}
-                          options)))))
+  []
+  (let [cookies (clj-http.cookies/cookie-store)]
+    (reify Client
+      (request [this method url]
+        (binding [clj-http.core/*cookie-store* cookies]
+          (web/request {:method method
+                        :url url})))
+      (request [this method url options]
+        (binding [clj-http.core/*cookie-store* cookies]
+          (web/request (merge {:method method
+                               :url url}
+                              options)))))))

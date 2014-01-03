@@ -5,17 +5,18 @@
             [cavy.session :as session]
             [cavy.util :as util]))
 
-(defn session
-  "Creates a new Cavy session."
-  [& options]
-  (apply session/create options))
-
 (defn visit
   "Navigates to the specified URL."
   [session url & params]
   (session/request session
                    :get (session/absolute-url session url)
                    :query-params (apply util/to-query-params params)))
+
+(defn session
+  "Creates a new Cavy session."
+  [& [url options]]
+  (let [session (apply session/create options)]
+    (if url (visit session url) session)))
 
 (defn click
   "Clicks on a link."
