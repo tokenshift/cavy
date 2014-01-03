@@ -19,6 +19,13 @@
       (is (not (nil? button)))
       (is (= "Login" (get-in button [:attrs :value]))))))
 
+(deftest find-form-with-button
+  (let [[form button] (query/find-form-with-button test-form "Login")]
+    (is (not (nil? form)))
+    (is (not (nil? button)))
+    (is (= "login-form" (get-in form [:attrs :id])))
+    (is (= "login-button" (get-in button [:attrs :id])))))
+
 (deftest find-label
   (testing "without colon"
     (let [label (query/find-label page "Field 1")]
