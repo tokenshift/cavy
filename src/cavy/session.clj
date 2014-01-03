@@ -32,13 +32,24 @@
   [response]
   (html/html-snippet (response :body)))
 
+(defn merge-cookies
+  "Receives cookies from an HTTP response (Set-Cookie) and merges them into
+  the client-side cookie store."
+  [url cookie-store response-cookies]
+  {})
+
+(defn share-cookies
+  "Selects cookies to be sent with an HTTP request to the specified URL."
+  [cookie-store url]
+  {})
+
 (defn request
   "Sends an HTTP request to the specified URL."
   [session method url & options]
-  (let [options (merge {:cookies (session :cookies)} (apply hash-map options))
+  (let [options (merge {:cookies (share-cookies (session :cookies) url)} (apply hash-map options))
         response (http/request (session :client) method url options)]
     (assoc session
-           :cookies (merge (session :cookies) (response :cookies))
+           :cookies (merge-cookies url (session :cookies) (response :cookies))
            :location url
            :response response
            :status (:status response)
