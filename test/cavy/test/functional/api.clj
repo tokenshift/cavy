@@ -57,3 +57,18 @@
     (is (not (nil? (get-in request [:options :form-params]))))
     (is (= ["test-username"] (get-in request [:options :form-params :username])))
     (is (= ["test-password"] (get-in request [:options :form-params :password])))))
+
+(defn check-req-cookie
+  "Verifies the value of a cookie sent in the last request."
+  [session key val]
+  (let [cookies (or (:cookies @(session :last-request)) {})]
+    (is (= val (cookies key))))
+  session)
+
+(deftest cookies
+  (-> (test-session "http://example.com/link1.html" "cookie1" "Foobar" "cookie2" "Fizzbuzz")
+      (check-req-cookie "cookie1" nil)
+      (check-req-cookie "cookie2" nil)
+      (cavy/visit "http://example.com/link2.html")
+      (check-req-cookie "cookie1" "Foobar")
+      (check-req-cookie "cookie2" "Fizzbuzz")))
