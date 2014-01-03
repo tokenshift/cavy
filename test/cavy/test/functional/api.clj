@@ -62,24 +62,6 @@
   "Verifies the value of a cookie sent in the last request."
   [session key val]
   (let [cookies (get-in @(session :last-request) [:options :cookies])]
+    (println "Cookies:" cookies)
     (is (= val (get-in cookies [key]))))
   session)
-
-(deftest cookies
-  (testing "cookies are preserved across requests"
-    (-> (test-session "http://example.com/link1.html"
-                      {"cookie1" "Foobar" "cookie2" "Fizzbuzz"})
-        (check-req-cookie "cookie1" nil)
-        (check-req-cookie "cookie2" nil)
-        (cavy/visit "http://example.com/link2.html")
-        (check-req-cookie "cookie1" "Foobar")
-        (check-req-cookie "cookie2" "Fizzbuzz")))
-  (testing "cookies are specific to a domain"
-    (-> (test-session "http://example1.com/link1.html"
-                      {"cookie1" "Foobar" "cookie2" "Fizzbuzz"})
-        (cavy/visit "http://example1.com/link1.html")
-        (check-req-cookie "cookie1" "Foobar")
-        (check-req-cookie "cookie2" "Fizzbuzz")
-        (cavy/visit "http://example2.com/link1.html")
-        (check-req-cookie "cookie1" nil)
-        (check-req-cookie "cookie2" nil))))
