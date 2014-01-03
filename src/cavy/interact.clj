@@ -1,7 +1,19 @@
 (ns cavy.interact
   "Functions for interacting with a Cavy session."
   (:require [net.cgrand.enlive-html :as enlive]
-            [cavy.query :as query]))
+            [cavy.query :as query])
+  (:use cavy.util))
+
+(defn- transform-checked
+  "Enlive element transformation to check/uncheck a checkbox."
+  [value]
+  (fn [el]
+    (let [check (if (= :toggle value)
+                  (not (contains? (el :attrs) :checked))
+                  value)]
+      (if check
+        (assoc-in el [:attrs :checked] "checked")
+        (dissoc-in el [:attrs :checked])))))
 
 (defn- set-value
   "Enlive element transformation to set the value of an element."
@@ -9,8 +21,21 @@
   (fn [element]
     (assoc-in element [:attrs :value] value)))
 
+(defn set-checked
+  "Sets whether a checkbox is checked."
+  [page target checked]
+  (if (instance? String target)
+    (enlive/transform page
+                      (query/find-by-label-selector
+                        page target
+                        [:input (enlive/attr= :type "checkbox")])
+                      (transform-checked checked))
+    (enlive/transform page
+                      target
+                      (transform-checked checked))))
+
 (defn set-field-value
-  "Sets the text value of an input field."
+  "Sets the value of an input field."
   [page target text]
   (if (instance? String target)
     (enlive/transform page
