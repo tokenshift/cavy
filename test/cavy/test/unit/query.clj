@@ -59,6 +59,12 @@
     (let [link (query/find-link page [:ul :li :a.foo])]
       (is (= "test3.html" (get-in link [:attrs :href])))))
 
+(deftest get-form-method
+  (let [form (first (enlive/select test-form [:form#login-form]))
+        action (query/get-form-method form)]
+    (is (not (nil? action)))
+    (is (= :post action))))
+
 (deftest get-form-fields
   (let [form (first (enlive/select test-form-filled [:form#login-form]))
         fields (query/get-form-fields form)]
