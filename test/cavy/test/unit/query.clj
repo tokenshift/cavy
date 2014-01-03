@@ -6,6 +6,19 @@
 (def page
   (enlive/html-snippet (slurp "test/cavy/test/test-pages/query-tests.html")))
 
+(def test-form
+  (enlive/html-snippet (slurp "test/cavy/test/test-pages/login.html")))
+
+(deftest find-button
+  (testing "by text"
+    (let [button (query/find-button test-form "Login")]
+      (is (not (nil? button)))
+      (is (= "Login" (get-in button [:attrs :value])))))
+  (testing "by selector"
+    (let [button (query/find-button test-form [(enlive/attr= :type "submit")])]
+      (is (not (nil? button)))
+      (is (= "Login" (get-in button [:attrs :value]))))))
+
 (deftest find-label
   (testing "without colon"
     (let [label (query/find-label page "Field 1")]

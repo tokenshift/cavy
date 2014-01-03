@@ -3,6 +3,24 @@
   (:require [net.cgrand.enlive-html :as enlive])
   (:use cavy.util))
 
+(defn find-button-selector
+  "Returns a selector that will locate a button."
+  [target]
+  (if (instance? String target)
+    [[#{:button [:input (enlive/attr= :type "submit")]}
+      (enlive/attr= :value target)]]
+    target))
+
+(defn find-form-with-button
+  "Locates the form containing the specified button."
+  [page target]
+  (if (instance? String target) nil))
+
+(defn find-button
+  "Locates a button on the page."
+  [page target]
+  (first (enlive/select page (find-button-selector target))))
+
 (defn find-label
   "Locates a label with the specified text."
   [page text]
