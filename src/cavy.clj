@@ -28,8 +28,14 @@
 (defn press
   "Presses a button."
   [session target]
-  ; TODO
-  session)
+  (let [[form button] (query/find-form-with-button (session :page) target)
+        fields (query/get-form-fields form)
+        method (query/get-form-method form)
+        action (get-in form [:attrs :action])]
+    (session/request session
+                     method
+                     (session/absolute-url session action)
+                     :form-params fields)))
 
 (defn fill-in
   "Fills in the specified input field."

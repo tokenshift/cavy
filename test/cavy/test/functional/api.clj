@@ -49,6 +49,7 @@
   (let [result (-> (test-session "http://example.com/login.html")
                    (cavy/fill-in "Username" "test-username")
                    (cavy/fill-in "Password" "test-password")
+                   (cavy/fill-in "Description" "Lorem ipsum...")
                    (cavy/press "Login"))
         request @(result :last-request)]
     (is (= :post (request :method)))
