@@ -60,3 +60,18 @@
                                       (enlive/has [(enlive/text-pred #(= target %))])}]]))
     (first-where-map (enlive/select page target)
                      :tag #(= :a %))))
+
+(defn get-form-fields
+  "Constructs a map of the named input fields in a form."
+  [form]
+  (let [fields (enlive/select form [[#{:input :select :textarea}
+                                     (enlive/attr? :name)]])]
+    (loop [map {} [field & rest] fields]
+      (if field
+        (let [name (get-in field [:attrs :name])
+              key (keyword name)
+              val (or (get-in field [:attrs :value])
+                      (enlive/text field))]
+          (recur (assoc map key (conj (or (map key) []) val))
+                 rest))
+        map))))

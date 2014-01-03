@@ -9,6 +9,9 @@
 (def test-form
   (enlive/html-snippet (slurp "test/cavy/test/test-pages/login.html")))
 
+(def test-form-filled
+  (enlive/html-snippet (slurp "test/cavy/test/test-pages/login-filled.html")))
+
 (deftest find-button
   (testing "by text"
     (let [button (query/find-button test-form "Login")]
@@ -55,3 +58,11 @@
   (testing "by enlive selector")
     (let [link (query/find-link page [:ul :li :a.foo])]
       (is (= "test3.html" (get-in link [:attrs :href])))))
+
+(deftest get-form-fields
+  (let [form (first (enlive/select test-form-filled [:form#login-form]))
+        fields (query/get-form-fields form)]
+    (is (not (nil? fields)))
+    (is (= ["test-username"] (:username fields)))
+    (is (= ["test-password"] (:password fields)))
+    (is (= ["Lorem ipsum dolor sit amet consectetur..."] (:description fields)))))
