@@ -44,3 +44,15 @@
         password (first (enlive/select page [:#password]))]
     (is (= "test-user" (get-in username [:attrs :value])))
     (is (= "test-password" (get-in password [:attrs :value])))))
+
+(deftest press
+  (let [result (-> (test-session "http://example.com/login.html")
+                   (cavy/fill-in "Username" "test-username")
+                   (cavy/fill-in "Password" "test-password")
+                   (cavy/press "Login"))
+        request @(result :last-request)]
+    (is (= :post (request :method)))
+    (is (= "http://example.com/login" (request :url)))
+    (is (not (nil? (get-in request [:options :form-params]))))
+    (is (= ["test-username"] (get-in request [:options :form-params :username])))
+    (is (= ["test-password"] (get-in request [:options :form-params :password])))))
