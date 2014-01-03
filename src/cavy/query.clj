@@ -40,14 +40,16 @@
 
 (defn find-by-label-selector
   "Returns a selector that will locate an element by its label text."
-  [page label-text]
-  (if-let [label (find-label page label-text)]
-    (if-let [label-for (get-in label [:attrs :for])]
-      [(enlive/id= label-for)]
-      (if-let [label-id (get-in label [:attrs :id])]
-        [(enlive/attr= :aria-labelledby label-id)]
-        nil))
-    [(enlive/attr= :aria-label label-text)]))
+  [page label-text & [and-pred]]
+
+  (let [label (find-label page label-text)
+        label-for (get-in label [:attrs :for])
+        label-id (get-in label [:attrs :id])
+        or-preds [(when label-for (enlive/id= label-for))
+                  (when label-id (enlive/attr= :aria-labelledby label-id))
+                  (enlive/attr= :aria-label label-text)]
+        or-preds (set (keep identity or-preds))]
+    (if and-pred [[or-preds and-pred]] [or-preds])))
 
 (defn find-by-label
   "Locates an element by its label text."
