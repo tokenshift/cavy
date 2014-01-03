@@ -61,12 +61,13 @@
 (defn check-req-cookie
   "Verifies the value of a cookie sent in the last request."
   [session key val]
-  (let [cookies (or (:cookies @(session :last-request)) {})]
-    (is (= val (cookies key))))
+  (let [cookies (get-in @(session :last-request) [:options :cookies])]
+    (is (= val (get-in cookies [key]))))
   session)
 
 (deftest cookies
-  (-> (test-session "http://example.com/link1.html" "cookie1" "Foobar" "cookie2" "Fizzbuzz")
+  (-> (test-session "http://example.com/link1.html"
+                    {"cookie1" "Foobar" "cookie2" "Fizzbuzz"})
       (check-req-cookie "cookie1" nil)
       (check-req-cookie "cookie2" nil)
       (cavy/visit "http://example.com/link2.html")
