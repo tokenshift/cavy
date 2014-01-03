@@ -35,7 +35,11 @@
       (is (= "field1" (get-in label [:attrs :for])))))
   (testing "with colon"
     (let [label (query/find-label page "Field 2")]
-      (is (= "label2" (get-in label [:attrs :id]))))))
+      (is (= "label2" (get-in label [:attrs :id])))))
+  (testing "with html in label"
+    (println (map enlive/text (enlive/select page [[:label (enlive/has [(enlive/text-pred #(= "Field 4:" %))])]])))
+    (let [label (query/find-label page "Field 4")]
+      (is (= "field4" (get-in label [:attrs :for]))))))
 
 (deftest find-by-label
   (testing "label for"

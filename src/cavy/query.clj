@@ -28,14 +28,15 @@
   [page target]
   (first (enlive/select page (find-button-selector target))))
 
+(defn label-text-pred
+  [label-text]
+  (enlive/pred #(if-let [text (enlive/text %)]
+                   (.startsWith (.trim text) label-text))))
+
 (defn find-label
   "Locates a label with the specified text."
   [page text]
-  (first (enlive/select
-           page
-           [[:label
-             (enlive/has
-               [(enlive/text-pred #(.startsWith (.trim %) text))])]])))
+  (first (enlive/select page [[:label (label-text-pred text)]])))
 
 (defn find-by-label-selector
   "Returns a selector that will locate an element by its label text."
