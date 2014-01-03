@@ -35,10 +35,10 @@
 (defn request
   "Sends an HTTP request to the specified URL."
   [session method url & options]
-  (let [response (http/request (session :client)
-                               method url
-                               (apply hash-map options))]
+  (let [options (merge {:cookies (session :cookies)} (apply hash-map options))
+        response (http/request (session :client) method url options)]
     (assoc session
+           :cookies (merge (session :cookies) (response :cookies))
            :location url
            :response response
            :status (:status response)
