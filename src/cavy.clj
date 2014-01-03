@@ -47,20 +47,17 @@
 (defn check
   "Checks a checkbox."
   [session target]
-  ; TODO
-  session)
+  (assoc session :page (interact/set-checked (session :page) target true)))
 
 (defn uncheck
   "Unchecks a checkbox."
   [session target]
-  ; TODO
-  session)
+  (assoc session :page (interact/set-checked (session :page) target false)))
 
 (defn toggle
   "Toggles the checkbox state."
   [session target]
-  ; TODO
-  session)
+  (assoc session :page (interact/set-checked (session :page) target :toggle)))
 
 (defn select
   "Selects options in a radio group or dropdown."
