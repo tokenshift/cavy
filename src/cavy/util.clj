@@ -2,6 +2,28 @@
   "General utility functions."
   (:require [cemerick.url :as url]))
 
+(defn in-maps
+  "Looks up a key in a sequence of maps."
+  [key & maps]
+  (map key maps))
+
+(defn firsts
+  "Selects the first elements of a sequence that satisfy a list of predicates."
+  [seq & preds]
+  (let [found (loop [[head & rest] seq
+                     preds-map (into {} (map-indexed (fn [k v] [k v]) preds))
+                     found-map {}]
+                (if head
+                  (recur rest
+                         preds-map
+                         (into {} (map (fn [[k pred]]
+                                         [k (or (found-map k)
+                                                (when (pred head) head))])
+                                       preds-map)))
+                  found-map))]
+    (map-indexed (fn [k _] (found k)) preds)))
+
+
 (defn first-where-map
   "Selects the first element of a sequence where the mapped value matches the
   predicate."
