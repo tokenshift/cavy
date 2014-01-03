@@ -47,4 +47,6 @@
 (defn absolute-url
   "Constructs an absolute URL given the current location and a relative path."
   [session & path]
-  (urly/resolve (session :location) (str/join "/" path)))
+  (if (session :location)
+    (urly/resolve (session :location) (str/join "/" path))
+    (str/join "/" path)))
