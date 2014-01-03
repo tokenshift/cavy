@@ -1,6 +1,7 @@
 (ns cavy.query
   "Functions for locating things within a page/session."
-  (:require [net.cgrand.enlive-html :as enlive])
+  (:require [clojure.string :as string]
+            [net.cgrand.enlive-html :as enlive])
   (:use cavy.util))
 
 (defn find-button-selector
@@ -60,6 +61,14 @@
                                       (enlive/has [(enlive/text-pred #(= target %))])}]]))
     (first-where-map (enlive/select page target)
                      :tag #(= :a %))))
+
+(defn get-form-method
+  "Gets the form submission method."
+  [form]
+  (case (string/upper-case (get-in form [:attrs :method]))
+    "GET" :get
+    "POST" :post
+    :get))
 
 (defn get-form-fields
   "Constructs a map of the named input fields in a form."
