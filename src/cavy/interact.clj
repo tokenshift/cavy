@@ -15,6 +15,22 @@
         (assoc-in el [:attrs :checked] "checked")
         (dissoc-in el [:attrs :checked])))))
 
+(defn- set-option-value
+  "Marks the option as selected if its value is in the list of values."
+  [values]
+  (fn [option]
+    (if (some #{(-> option :attrs :value)} values)
+      (assoc-in option [:attrs :selected] "selected")
+      (assoc option :attrs (dissoc (option :attrs) :selected)))))
+
+(defn- select-options
+  "Transformation to select a set of options in a dropdown."
+  [& values]
+  (fn [el]
+    (if (-> el :attrs :multiple)
+      (enlive/at el [:option] (set-option-value values))
+      (enlive/at el [:option] (set-option-value (first values))))))
+
 (defn- set-value
   "Enlive element transformation to set the value of an element."
   [value]
@@ -27,17 +43,11 @@
   ; TODO
   page)
 
-(defn unselect
-  "De-selects options in a dropdown."
-  [page target & values]
-  ; TODO
-  page)
-
 (defn select
   "Selections options in a dropdown."
   [page target & values]
-  ; TODO
-  page)
+  (enlive/transform page (query/find-target-selector page target [:select])
+                    (select-options values)))
 
 (defn set-checked
   "Sets whether a checkbox is checked."

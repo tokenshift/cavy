@@ -64,11 +64,6 @@
   [session target & values]
   (assoc session :page (apply interact/select (session :page) target values)))
 
-(defn unselect
-  "De-selects options in a dropdown."
-  [session target & values]
-  (assoc session :page (apply interact/unselect (session :page) target values)))
-
 (defn choose
   "Selects an option in a radio group."
   [session target value]
