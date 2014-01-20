@@ -17,9 +17,10 @@
 
 (defn- set-radio-checked
   "Marks the radio button as checked if it has the correct value."
-  [value]
+  [page value]
   (fn [option]
-    (if (= value (-> option :attrs :value))
+    (if (or (= value (-> option :attrs :value))
+            (= value (query/find-label-for-element page option)))
       (assoc-in option [:attrs :checked] "checked")
       (assoc option :attrs (dissoc (option :attrs) :checked)))))
 
@@ -51,7 +52,7 @@
   "Selects an option in a radio group."
   [page target value]
   (enlive/transform page (query/find-radiogroup-selector target)
-                    (set-radio-checked value)))
+                    (set-radio-checked page value)))
 
 (defn select
   "Selections options in a dropdown."

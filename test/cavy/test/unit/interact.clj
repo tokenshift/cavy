@@ -110,7 +110,7 @@
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
         (is (= 1 (count chosen)))
         (is (= "2" (get-in (nth chosen 0) [:attrs :value])))))
-    (comment testing "by label"
+    (testing "by label"
       (let [result (interact/choose form "Select One" "Option 3")
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
         (is (= 1 (count chosen)))
@@ -121,7 +121,7 @@
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
         (is (= 1 (count chosen)))
         (is (= "2" (get-in (nth chosen 0) [:attrs :value])))))
-    (comment testing "by label"
+    (testing "by label"
       (let [result (interact/choose form "radiogroup2" "Option 2")
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
         (is (= 1 (count chosen)))
@@ -131,7 +131,7 @@
             result (interact/choose form "radiogroup2" nil)
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
         (is (= 0 (count chosen)))))
-    (comment testing "changing"
+    (testing "changing"
       (let [result (interact/choose form "radiogroup2" "Option 2")
             result (interact/choose form "radiogroup2" "Option 1")
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
