@@ -7,21 +7,24 @@
 (defn find-button-selector
   "Returns a selector that will locate a button."
   [target]
-  (if (instance? String target)
-    [[:input
-      (enlive/attr= :type "submit")
-      (enlive/attr= :value target)]]
+  (cond
+    (= "Submit" target)
+    [[:input (enlive/attr= :type "submit") (enlive/but (enlive/attr? :value))]]
+
+    (instance? String target)
+    [[:input (enlive/attr= :type "submit") (enlive/attr= :value target)]]
+
+    :else
     target))
 
 (defn find-form-with-button
   "Locates the form containing the specified button."
   [page target]
-  (firsts (enlive/select page
-                         #{[[:form (enlive/has (find-button-selector target))]]
-                           (find-button-selector target)})
-          #(= :form (:tag %))
-          #(and (= :input (:tag %1))
-                (= "submit" (get-in %1 [:attrs :type])))))
+  (let [selector (find-button-selector target)]
+    (firsts (enlive/select page #{[[:form (enlive/has selector)]] selector})
+            #(= :form (:tag %))
+            #(and (= :input (:tag %1))
+                  (= "submit" (get-in %1 [:attrs :type]))))))
 
 (defn find-button
   "Locates a button on the page."
