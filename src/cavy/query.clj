@@ -122,3 +122,22 @@
   "Locates a collection of radio buttons."
   [page target]
   (enlive/select page (find-radiogroup-selector target)))
+
+(defn find-label-for-element
+  "Finds the label (text) associated with the element."
+  [page el]
+  (let [labelledby (-> el :attrs :aria-labelledby)
+        label (-> el :attrs :aria-label)
+        id (-> el :attrs :id)]
+    (cond
+      labelledby
+      (enlive/text (first (enlive/select page [[:label (enlive/attr= :id labelledby)]])))
+
+      label
+      label
+
+      id
+      (enlive/text (first (enlive/select page [[:label (enlive/attr= :for id)]])))
+
+      :else
+      nil)))
