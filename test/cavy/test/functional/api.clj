@@ -2,6 +2,7 @@
   (:require [net.cgrand.enlive-html :as enlive]
             cavy)
   (:use clojure.test
+        cavy.test.utils
         cavy.test.functional.session))
 
 (defmacro with-session
@@ -39,7 +40,11 @@
   (testing "with a fully specified URL"
     (-> (test-session "http://example.com/link1.html")
         (cavy/click "external")
-        (went-to "http://example2.com/link.html"))))
+        (went-to "http://example2.com/link.html")))
+  (testing "link not found"
+    (let [session (test-session "http://example.com/link1.html")
+          result (cavy/click session"whatever")]
+      (is (unchanged result session)))))
 
 (deftest fill-in
   (testing "login fields"
@@ -50,7 +55,11 @@
           username (first (enlive/select page [:#username]))
           password (first (enlive/select page [:#password]))]
       (is (= "test-user" (get-in username [:attrs :value])))
-      (is (= "test-password" (get-in password [:attrs :value]))))))
+      (is (= "test-password" (get-in password [:attrs :value])))))
+  (testing "field not found"
+    (let [session (test-session "http://example.com/login.html")
+          result (cavy/fill-in session "Whatever" "testing")]
+      (is (unchanged result session)))))
 
 (deftest press
   (testing "submitting login form"
@@ -64,4 +73,8 @@
       (is (= "http://example.com/login" (request :url)))
       (is (not (nil? (get-in request [:options :form-params]))))
       (is (= ["test-username"] (get-in request [:options :form-params :username])))
-      (is (= ["test-password"] (get-in request [:options :form-params :password]))))))
+      (is (= ["test-password"] (get-in request [:options :form-params :password])))))
+  (testing "button not found"
+    (let [session (test-session "http://example.com/login.html")
+          result (cavy/press session "Whatever")]
+      (is (unchanged result session)))))

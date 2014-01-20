@@ -4,6 +4,11 @@
             [net.cgrand.enlive-html :as enlive])
   (:use cavy.util))
 
+(defn upper-case
+  "Safe uppercase (handles nil)."
+  [val]
+  (if val (string/upper-case val) nil))
+
 (defn find-button-selector
   "Returns a selector that will locate a button."
   [target]
@@ -71,7 +76,7 @@
 (defn get-form-method
   "Gets the form submission method."
   [form]
-  (case (string/upper-case (get-in form [:attrs :method]))
+  (case (upper-case (get-in form [:attrs :method]))
     "GET" :get
     "POST" :post
     :get))
