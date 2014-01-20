@@ -60,7 +60,16 @@
   (assoc session :page (interact/set-checked (session :page) target :toggle)))
 
 (defn select
-  "Selects options in a radio group or dropdown."
+  "Selects options in a dropdown."
   [session target & values]
-  ; TODO
-  session)
+  (assoc session :page (apply interact/select (session :page) target values)))
+
+(defn unselect
+  "De-selects options in a dropdown."
+  [session target & values]
+  (assoc session :page (apply interact/unselect (session :page) target values)))
+
+(defn choose
+  "Selects an option in a radio group."
+  [session target value]
+  (assoc session :page (apply interact/choose (session :page) target value)))
