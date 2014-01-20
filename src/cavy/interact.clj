@@ -15,6 +15,14 @@
         (assoc-in el [:attrs :checked] "checked")
         (dissoc-in el [:attrs :checked])))))
 
+(defn- set-radio-checked
+  "Marks the radio button as checked if it has the correct value."
+  [value]
+  (fn [option]
+    (if (= value (-> option :attrs :value))
+      (assoc-in option [:attrs :checked] "checked")
+      (assoc option :attrs (dissoc (option :attrs) :checked)))))
+
 (defn- set-option-value
   "Marks the option as selected if its value is in the list of values."
   [values]
@@ -42,9 +50,8 @@
 (defn choose
   "Selects an option in a radio group."
   [page target value]
-  (let [group (query/find-radiogroup page target)]
-    (println "GROUP:" group))
-  page)
+  (enlive/transform page (query/find-radiogroup-selector target)
+                    (set-radio-checked value)))
 
 (defn select
   "Selections options in a dropdown."
