@@ -19,7 +19,9 @@
   "Marks the option as selected if its value is in the list of values."
   [values]
   (fn [option]
-    (if (some #{(-> option :attrs :value)} values)
+    (if (some #(or (= (-> option :attrs :value) %)
+                   (= (enlive/text option) %))
+              values)
       (assoc-in option [:attrs :selected] "selected")
       (assoc option :attrs (dissoc (option :attrs) :selected)))))
 

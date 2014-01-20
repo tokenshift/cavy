@@ -53,17 +53,17 @@
             chosen (first (enlive/select result [[:option (enlive/attr? :selected)]]))]
         (is (not (nil? chosen)))
         (is (= "2" (-> chosen :attrs :value)))))
-    (comment testing "selecting by text"
+    (testing "selecting by text"
       (let [result (interact/select form "Single Select" "Option 3")
             chosen (first (enlive/select result [[:option (enlive/attr? :selected)]]))]
         (is (not (nil? chosen)))
         (is (= "3" (-> chosen :attrs :value)))))
-    (comment testing "deselecting"
+    (testing "deselecting"
       (let [result (interact/select form "Single Select" "3")
             result (interact/select result "Single Select" nil)
             chosen (first (enlive/select result [[:option (enlive/attr? :selected)]]))]
         (is (nil? chosen))))
-    (comment testing "changing selection"
+    (testing "changing selection"
       (let [result (interact/select form "Single Select" "3")
             result (interact/select result "Single Select" "4")
             chosen (first (enlive/select result [[:option (enlive/attr? :selected)]]))]
