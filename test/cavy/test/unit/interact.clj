@@ -69,15 +69,15 @@
             chosen (first (enlive/select result [[:option (enlive/attr? :selected)]]))]
         (is (not (nil? chosen)))
         (is (= "4" (-> chosen :attrs :value))))))
-  (comment testing "multi-select dropdown"
-    (testing "selecting by text"
-      (let [result (interact/select form "Multi Select" "2 4 6")
+  (testing "multi-select dropdown"
+    (testing "selecting by value"
+      (let [result (interact/select form "Multi Select" "2" "4" "6")
             chosen (enlive/select result [[:option (enlive/attr? :selected)]])]
         (is (= 3 (count chosen)))
         (is (= "2" (get-in (nth chosen 0) [:attrs :value])))
         (is (= "4" (get-in (nth chosen 1) [:attrs :value])))
         (is (= "6" (get-in (nth chosen 2) [:attrs :value])))))
-    (testing "selecting by value"
+    (testing "selecting by text"
       (let [result (interact/select form "Multi Select" "Option 1" "Option 3" "Option 5")
             chosen (enlive/select result [[:option (enlive/attr? :selected)]])]
         (is (= 3 (count chosen)))
