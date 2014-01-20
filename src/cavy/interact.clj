@@ -18,20 +18,20 @@
 (defn- set-option-value
   "Marks the option as selected if its value is in the list of values."
   [values]
-  (fn [option]
-    (if (some #(or (= (-> option :attrs :value) %)
-                   (= (enlive/text option) %))
-              values)
-      (assoc-in option [:attrs :selected] "selected")
-      (assoc option :attrs (dissoc (option :attrs) :selected)))))
+  (let [values (apply hash-set values)]
+    (fn [option]
+      (if (or (contains? values (-> option :attrs :value))
+              (contains? values (enlive/text option)))
+        (assoc-in option [:attrs :selected] "selected")
+        (assoc option :attrs (dissoc (option :attrs) :selected))))))
 
 (defn- select-options
   "Transformation to select a set of options in a dropdown."
-  [& values]
+  [values]
   (fn [el]
     (if (-> el :attrs :multiple)
       (enlive/at el [:option] (set-option-value values))
-      (enlive/at el [:option] (set-option-value (first values))))))
+      (enlive/at el [:option] (set-option-value (take 1 values))))))
 
 (defn- set-value
   "Enlive element transformation to set the value of an element."
