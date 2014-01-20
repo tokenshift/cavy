@@ -98,24 +98,24 @@
         (is (= "2" (get-in (nth chosen 1) [:attrs :value])))
         (is (= "3" (get-in (nth chosen 2) [:attrs :value])))))))
 
-(comment deftest choose
+(deftest choose
   (testing "in fieldset"
     (testing "by legend"
       (let [result (interact/choose form "Select One" "1")
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
         (is (= 1 (count chosen)))
         (is (= "1" (get-in (nth chosen 0) [:attrs :value])))))
-    (testing "by name"
+    (comment testing "by name"
       (let [result (interact/choose form "radiogroup1" "2")
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
         (is (= 1 (count chosen)))
         (is (= "2" (get-in (nth chosen 0) [:attrs :value])))))
-    (testing "by label"
+    (comment testing "by label"
       (let [result (interact/choose form "Select One" "Option 3")
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
         (is (= 1 (count chosen)))
         (is (= "3" (get-in (nth chosen 0) [:attrs :value]))))))
-  (testing "not in fieldset"
+  (comment testing "not in fieldset"
     (testing "by value"
       (let [result (interact/choose form "radiogroup2" "2")
             chosen (enlive/select result [[:input (enlive/attr? :checked)]])]

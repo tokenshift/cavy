@@ -42,7 +42,8 @@
 (defn choose
   "Selects an option in a radio group."
   [page target value]
-  ; TODO
+  (let [group (query/find-radiogroup page target)]
+    (println "GROUP:" group))
   page)
 
 (defn select
