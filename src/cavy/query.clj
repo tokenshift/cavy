@@ -107,3 +107,13 @@
           (recur (assoc map key (conj (or (map key) []) val))
                  rest))
         map))))
+
+(defn find-radiogroup
+  "Locates a collection of radio buttons."
+  [page target]
+  (or (seq (enlive/select page [[:fieldset
+                                 (enlive/has [[:legend (label-text-pred target)]])]
+                                [:input (enlive/attr= :type "radio")]]))
+      (seq (enlive/select page [[:input
+                                 (enlive/attr= :type "radio")
+                                 (enlive/attr= :name target)]]))))

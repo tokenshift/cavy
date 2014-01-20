@@ -96,3 +96,17 @@
                                    [[:input (enlive/attr? :aria-label)]])]
       (is (not (nil? field)))
       (is (= "Field 3" (get-in field [:attrs :aria-label]))))))
+
+(deftest find-radiogroup
+  (testing "by legend"
+    (let [options (query/find-radiogroup form "Select One")]
+      (is (= 3 (count options)))
+      (is (= "group1-option-1" (get-in (nth options 0) [:attrs :id])))
+      (is (= "group1-option-2" (get-in (nth options 1) [:attrs :id])))
+      (is (= "group1-option-3" (get-in (nth options 2) [:attrs :id])))))
+  (testing "by name"
+    (let [options (query/find-radiogroup form "radiogroup2")]
+      (is (= 3 (count options)))
+      (is (= "group2-option-1" (get-in (nth options 0) [:attrs :id])))
+      (is (= "group2-option-2" (get-in (nth options 1) [:attrs :id])))
+      (is (= "group2-option-3" (get-in (nth options 2) [:attrs :id]))))))
