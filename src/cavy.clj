@@ -24,7 +24,7 @@
   (let [page (session :page)
         link (query/find-link page target)
         url (get-in link [:attrs :href])]
-    (visit session url)))
+    (if url (visit session url) session)))
 
 (defn press
   "Presses a button."
@@ -33,10 +33,10 @@
         fields (query/get-form-fields form)
         method (query/get-form-method form)
         action (get-in form [:attrs :action])]
-    (session/request session
-                     method
-                     (session/absolute-url session action)
-                     :form-params fields)))
+    (if (and fields method action)
+      (session/request session method (session/absolute-url session action)
+                       :form-params fields)
+      session)))
 
 (defn fill-in
   "Fills in the specified input field."
