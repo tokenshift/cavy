@@ -83,3 +83,16 @@
     (is (= ["test-username"] (:username fields)))
     (is (= ["test-password"] (:password fields)))
     (is (= ["Lorem ipsum dolor sit amet consectetur..."] (:description fields)))))
+
+(deftest find-target
+  (testing "by label"
+    (let [field (query/find-target query-tests
+                                   "Field 1"
+                                   [(enlive/attr= :type "text")])]
+      (is (not (nil? field)))
+      (is (= "field1" (get-in field [:attrs :id])))))
+  (testing "by selector"
+    (let [field (query/find-target query-tests
+                                   [[:input (enlive/attr? :aria-label)]])]
+      (is (not (nil? field)))
+      (is (= "Field 3" (get-in field [:attrs :aria-label]))))))

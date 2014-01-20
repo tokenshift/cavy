@@ -64,6 +64,18 @@
   [page label-text]
   (first (enlive/select page (find-by-label-selector page label-text))))
 
+(defn find-target-selector
+  "Returns a selector that locates an element by text or selector."
+  [page target & [and-pred]]
+  (if (instance? String target)
+    (find-by-label-selector page target and-pred)
+    target))
+
+(defn find-target
+  "Locates an element by text or selector."
+  [page target & [and-pred]]
+  (first (enlive/select page (find-target-selector page target and-pred))))
+
 (defn find-link
   "Locates a link within the page."
   [page target]
