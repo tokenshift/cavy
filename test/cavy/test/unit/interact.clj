@@ -7,6 +7,9 @@
 (def query-tests
   (enlive/html-snippet (slurp "test/cavy/test/test-pages/query-tests.html")))
 
+(def form
+  (enlive/html-snippet (slurp "test/cavy/test/test-pages/form.html")))
+
 (deftest set-checked
   (testing "checked = true"
     (let [result (interact/set-checked query-tests "Field 5" true)
@@ -42,3 +45,83 @@
   (testing "field not found"
     (let [result (interact/set-field-value query-tests "Whatever" "Testing")]
       (is (unchanged result query-tests)))))
+
+(deftest select
+  (testing "single-select dropdown"
+    (testing "selecting by text"
+      (let [result (interact/select form "Single Select" "2")
+            chosen (first (enlive/select result [[:option (enlive/attr? :selected)]]))]
+        (is (not (nil? chosen)))
+        (is (= "2" (-> chosen :attrs :value)))))
+    (testing "selecting by value"
+      (let [result (interact/select form "Single Select" "Option 3")
+            chosen (first (enlive/select result [[:option (enlive/attr? :selected)]]))]
+        (is (not (nil? chosen)))
+        (is (= "3" (-> chosen :attrs :value)))))
+    (testing "deselecting"
+      (let [result (interact/select form "Single Select" "3")
+            result (interact/unselect result "Single Select" "3")
+            chosen (first (enlive/select result [[:option (enlive/attr? :selected)]]))]
+        (is (nil? chosen)))))
+  (testing "multi-select dropdown"
+    (testing "selecting by text"
+      (let [result (interact/select form "Multi Select" "2 4 6")
+            chosen (enlive/select result [[:option (enlive/attr? :selected)]])]
+        (is (= 3 (count chosen)))
+        (is (= "2" (get-in (nth chosen 0) [:attrs :value])))
+        (is (= "4" (get-in (nth chosen 1) [:attrs :value])))
+        (is (= "6" (get-in (nth chosen 2) [:attrs :value])))))
+    (testing "selecting by value"
+      (let [result (interact/select form "Multi Select" "Option 1" "Option 3" "Option 5")
+            chosen (enlive/select result [[:option (enlive/attr? :selected)]])]
+        (is (= 3 (count chosen)))
+        (is (= "1" (get-in (nth chosen 0) [:attrs :value])))
+        (is (= "3" (get-in (nth chosen 1) [:attrs :value])))
+        (is (= "5" (get-in (nth chosen 2) [:attrs :value])))))
+    (testing "deselecting"
+      (let [result (interact/select form "Multi Select" "1" "3" "5")
+            result (interact/unselect result "Multi Select" "3")
+            chosen (enlive/select result [[:option (enlive/attr? :selected)]])]
+        (is (= 2 (count chosen)))
+        (is (= "1" (get-in (nth chosen 0) [:attrs :value])))
+        (is (= "5" (get-in (nth chosen 1) [:attrs :value])))))))
+
+(deftest choose
+  (testing "in fieldset"
+    (testing "by legend"
+      (let [result (interact/choose form "Select One" "1")
+            chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
+        (is (= 1 (count chosen)))
+        (is (= "1" (get-in (nth chosen 0) [:attrs :value])))))
+    (testing "by name"
+      (let [result (interact/choose form "radiogroup1" "2")
+            chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
+        (is (= 1 (count chosen)))
+        (is (= "2" (get-in (nth chosen 0) [:attrs :value])))))
+    (testing "by label"
+      (let [result (interact/choose form "Select One" "Option 3")
+            chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
+        (is (= 1 (count chosen)))
+        (is (= "3" (get-in (nth chosen 0) [:attrs :value]))))))
+  (testing "not in fieldset"
+    (testing "by value"
+      (let [result (interact/choose form "radiogroup2" "2")
+            chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
+        (is (= 1 (count chosen)))
+        (is (= "2" (get-in (nth chosen 0) [:attrs :value])))))
+    (testing "by label"
+      (let [result (interact/choose form "radiogroup2" "Option 2")
+            chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
+        (is (= 1 (count chosen)))
+        (is (= "2" (get-in (nth chosen 0) [:attrs :value])))))
+    (testing "deselecting"
+      (let [result (interact/choose form "radiogroup2" "2")
+            result (interact/choose form "radiogroup2" nil)
+            chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
+        (is (= 0 (count chosen)))))
+    (testing "changing"
+      (let [result (interact/choose form "radiogroup2" "Option 2")
+            result (interact/choose form "radiogroup2" "Option 1")
+            chosen (enlive/select result [[:input (enlive/attr? :checked)]])]
+        (is (= 1 (count chosen)))
+        (is (= "1" (get-in (nth chosen 0) [:attrs :value])))))))

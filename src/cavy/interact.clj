@@ -21,6 +21,24 @@
   (fn [element]
     (assoc-in element [:attrs :value] value)))
 
+(defn choose
+  "Selects an option in a radio group."
+  [page target value]
+  ; TODO
+  page)
+
+(defn unselect
+  "De-selects options in a dropdown."
+  [page target & values]
+  ; TODO
+  page)
+
+(defn select
+  "Selections options in a dropdown."
+  [page target & values]
+  ; TODO
+  page)
+
 (defn set-checked
   "Sets whether a checkbox is checked."
   [page target checked]
