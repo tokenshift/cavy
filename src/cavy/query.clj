@@ -108,12 +108,17 @@
                  rest))
         map))))
 
+(defn find-radiogroup-selector
+  "Returns a selector that will find a collection of radio buttons."
+  [target]
+  #{[[:fieldset
+      (enlive/has [[:legend (label-text-pred target)]])]
+     [:input (enlive/attr= :type "radio")]]
+    [[:input
+      (enlive/attr= :type "radio")
+      (enlive/attr= :name target)]]})
+
 (defn find-radiogroup
   "Locates a collection of radio buttons."
   [page target]
-  (or (seq (enlive/select page [[:fieldset
-                                 (enlive/has [[:legend (label-text-pred target)]])]
-                                [:input (enlive/attr= :type "radio")]]))
-      (seq (enlive/select page [[:input
-                                 (enlive/attr= :type "radio")
-                                 (enlive/attr= :name target)]]))))
+  (enlive/select page (find-radiogroup-selector target)))
