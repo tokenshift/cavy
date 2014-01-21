@@ -46,7 +46,10 @@
   "Enlive element transformation to set the value of an element."
   [value]
   (fn [element]
-    (assoc-in element [:attrs :value] value)))
+    (case (element :tag)
+      :input (assoc-in element [:attrs :value] value)
+      :textarea (assoc element :content [value])
+      element)))
 
 (defn choose
   "Selects an option in a radio group."
