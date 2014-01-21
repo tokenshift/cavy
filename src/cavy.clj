@@ -30,10 +30,10 @@
   "Presses a button."
   [session target]
   (let [[form button] (query/find-form-with-button (session :page) target)
-        fields (query/get-form-fields form)
+        fields (query/get-form-fields form button)
         method (query/get-form-method form)
         action (get-in form [:attrs :action])]
-    (if (and fields method action)
+    (if (and form button fields method action)
       (session/request session method (session/absolute-url session action)
                        :form-params fields)
       session)))

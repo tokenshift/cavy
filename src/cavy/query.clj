@@ -93,20 +93,30 @@
     "POST" :post
     :get))
 
+;; Adds the value of the specified form field to a map.
+(defmulti assoc-field-value
+  (fn [fields field] [(-> field :tag) (-> field :attrs :type)]))
+
+(defmethod assoc-field-value [:input "text"]
+  [fields field]
+  (let [name (-> field :attrs :name)]
+    (assoc fields name (conj (fields name) (-> field :attrs :value)))))
+
+(defmethod assoc-field-value :default
+  [fields field]
+  ; Do nothing
+  fields)
+
 (defn get-form-fields
   "Constructs a map of the named input fields in a form."
-  [form]
+  [form & [button]]
+  ; Get every named form field.
   (let [fields (enlive/select form [[#{:input :select :textarea}
                                      (enlive/attr? :name)]])]
-    (loop [map {} [field & rest] fields]
-      (if field
-        (let [name (get-in field [:attrs :name])
-              key (keyword name)
-              val (or (get-in field [:attrs :value])
-                      (enlive/text field))]
-          (recur (assoc map key (conj (or (map key) []) val))
-                 rest))
-        map))))
+    ; Add each field value to a map of field values.
+    (reduce #(assoc-field-value %1 %2) {} fields)
+    ; TODO: Add the selected button value (if it is named).
+    ))
 
 (defn find-radiogroup-selector
   "Returns a selector that will find a collection of radio buttons."
