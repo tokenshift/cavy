@@ -156,11 +156,15 @@
   [form & [button]]
   ; Get every named form field.
   (let [fields (enlive/select form [[#{:input :select :textarea}
-                                     (enlive/attr? :name)]])]
-    ; Add each field value to a map of field values.
-    (reduce #(assoc-field-value %1 %2) {} fields)
-    ; TODO: Add the selected button value (if it is named).
-    ))
+                                     (enlive/attr? :name)]])
+        ; Add each field value to a map of field values.
+        field-map (reduce #(assoc-field-value %1 %2) {} fields)
+        ; Add the selected button value (if it is named).
+        button-name (-> button :attrs :name keyword)
+        button-val (-> button :attrs :value)]
+    (if (and button-name button-val)
+      (assoc field-map button-name (conj (field-map button-name) button-val))
+      field-map)))
 
 (defn find-radiogroup-selector
   "Returns a selector that will find a collection of radio buttons."
