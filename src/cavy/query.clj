@@ -97,10 +97,54 @@
 (defmulti assoc-field-value
   (fn [fields field] [(-> field :tag) (-> field :attrs :type)]))
 
+(defmethod assoc-field-value [:input "checkbox"]
+  [fields field]
+  (let [name (-> field :attrs :name keyword)
+        value (-> field :attrs :value)
+        checked (-> field :attrs :checked)]
+    (if checked
+      (assoc fields name (conj (fields name) value))
+      fields)))
+
+(defmethod assoc-field-value [:input "hidden"]
+  [fields field]
+  (let [name (-> field :attrs :name keyword)
+        value (-> field :attrs :value)]
+    (assoc fields name (conj (fields name) value))))
+
+(defmethod assoc-field-value [:input "password"]
+  [fields field]
+  (let [name (-> field :attrs :name keyword)
+        value (-> field :attrs :value)]
+    (assoc fields name (conj (fields name) value))))
+
+(defmethod assoc-field-value [:input "radio"]
+  [fields field]
+  (let [name (-> field :attrs :name keyword)
+        value (-> field :attrs :value)
+        checked (-> field :attrs :checked)]
+    (if checked
+      (assoc fields name (conj (fields name) value))
+      fields)))
+
 (defmethod assoc-field-value [:input "text"]
   [fields field]
-  (let [name (-> field :attrs :name)]
-    (assoc fields name (conj (fields name) (-> field :attrs :value)))))
+  (let [name (-> field :attrs :name keyword)
+        value (-> field :attrs :value)]
+    (assoc fields name (conj (fields name) value))))
+
+(defmethod assoc-field-value [:select nil]
+  [fields field]
+  (let [name (-> field :attrs :name keyword)
+        selected (enlive/select field [[:option (enlive/attr? :selected)]])
+        values (map #(get-in % [:attrs :value]) selected)]
+    (assoc fields name (apply conj (fields name) values))))
+
+(defmethod assoc-field-value [:textarea nil]
+  [fields field]
+  (let [name (-> field :attrs :name keyword)
+        value (enlive/text field)]
+    (assoc fields name (conj (fields name) value))))
 
 (defmethod assoc-field-value :default
   [fields field]
