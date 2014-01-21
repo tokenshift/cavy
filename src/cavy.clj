@@ -67,4 +67,4 @@
 (defn choose
   "Selects an option in a radio group."
   [session target value]
-  (assoc session :page (apply interact/choose (session :page) target value)))
+  (assoc session :page (interact/choose (session :page) target value)))
