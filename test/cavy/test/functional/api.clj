@@ -59,7 +59,14 @@
   (testing "field not found"
     (let [session (test-session "http://example.com/login.html")
           result (cavy/fill-in session "Whatever" "testing")]
-      (is (unchanged result session)))))
+      (is (unchanged result session))))
+  (testing "textarea"
+    (let [result (-> (test-session "http://example.com/login.html")
+                     (cavy/fill-in "Description" "Lorem ipsum dolor..."))
+          description (first (enlive/select (result :page) [:#description]))
+          text (enlive/text description)]
+      (is (not (nil? text)))
+      (is (= "Lorem ipsum dolor..." text)))))
 
 (deftest press
   (testing "submitting login form"
