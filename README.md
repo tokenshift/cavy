@@ -16,36 +16,36 @@ apps, I recommend [Kerodon](https://github.com/xeqi/kerodon).
 
 ## Examples
 
-  (require 'cavy)
-
-  (-> (cavy/session "https://example.com/login")
-      (cavy/fill-in "Username" "my-username")
-      (cavy/fill-in "Password" "my-password")
-      (cavy/press "Login"))
+    (require 'cavy)
+    
+    (-> (cavy/session "https://example.com/login")
+        (cavy/fill-in "Username" "my-username")
+        (cavy/fill-in "Password" "my-password")
+        (cavy/press "Login"))
 
 Cookies are maintained within a session, so you can login and then navigate
 secured pages.
 
 ## API
 
-* `session [url] [options]`
+* `session [url] [options]`  
   Creates a new Cavy session. If a URL is specified, the session will
   immediately navigate there.
-* `visit {url} [params...]`
+* `visit {url} [params...]`  
   Navigates to the specified URL. Params should be alternating key-value pairs,
   and will be appended to the URL as query parameters (`visit` always makes a
   GET request).
-* `click {target}`
+* `click {target}`  
   Clicks on a link specified by text or target URL.
-* `press {target}`
+* `press {target}`  
   Presses a button specified by text. This should be a 'submit' button in a
   form, and will provoke a POST request with any form data.
-* `fill-in {target} {text}`
+* `fill-in {target} {text}`  
   Fills in a textbox (or password box, or textarea) with the specified text.
-* `check {target}`, `uncheck {target}`, `toggle {target}`
+* `check {target}`, `uncheck {target}`, `toggle {target}`  
   Checks, unchecks or toggles the specified checkbox.
-* `select {target} [values...]`
+* `select {target} [values...]`  
   Selects the specified options in a dropdown. If no values are given, all
   options will be deselected.
-* `choose {target} {value}
+* `choose {target} {value}`  
   Selects the specified option in a group of radio buttons.
