@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Test Form</title>
+	</head>
+	<body>
+		<h1>Test Form</h1>
+    <form action="test-submit" method="post">
+      <input type="hidden" id="hidden-field" name="hidden" value="Testing Hidden Fields" />
+
+      <label for="field1">Field 1:</label><br />
+      <input type="text" id="field1" name="field1" /><br />
+      <br />
+
+      <label for="password">Password:</label><br />
+      <input type="password" id="password" name="password" /><br />
+      <br />
+
+      <input type="checkbox" id="checkbox" name="checkbox" value="Selected" /><label for="checkbox">Selected</label><br />
+      <br />
+
+      <label for="textarea">Description:</label><br />
+      <textarea id="textarea" name="description"></textarea><br />
+      <br />
+
+      <label for="select">Single Select:</label><br />
+      <select id="select" name="singleselect">
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+        <option value="4">Option 4</option>
+      </select><br />
+      <br />
+
+      <label for="multiselect">Multi Select:</label><br />
+      <select id="multiselect" multiple="multiple" name="multiselect">
+        <option value="1">Option 1</option>
+        <option value="2">Option 2</option>
+        <option value="3">Option 3</option>
+        <option value="4">Option 4</option>
+        <option value="5">Option 5</option>
+        <option value="6">Option 6</option>
+      </select><br />
+      <br />
+
+      <fieldset>
+        <legend>Select One:</legend>
+        <input type="radio" name="radiogroup1" id="group1-option-1" value="1" />
+        <label for="group1-option-1">Option 1</label>
+        <input type="radio" name="radiogroup1" id="group1-option-2" value="2" />
+        <label for="group1-option-2">Option 2</label>
+        <input type="radio" name="radiogroup1" id="group1-option-3" value="3" />
+        <label for="group1-option-3">Option 3</label>
+      </fieldset>
+      <br />
+
+      <label>Select Another:</label><br />
+      <input type="radio" name="radiogroup2" id="group2-option-1" value="1" />
+      <label for="group2-option-1">Option 1</label>
+      <input type="radio" name="radiogroup2" id="group2-option-2" value="2" />
+      <label for="group2-option-2">Option 2</label>
+      <input type="radio" name="radiogroup2" id="group2-option-3" value="3" />
+      <label for="group2-option-3">Option 3</label><br />
+      <br />
+
+      <input type="submit" name="action" value="Yes" />
+      <input type="submit" name="action" value="No" />
+      <input type="submit" name="action" value="Cancel" />
+		</form>
+	</body>
+</html>

@@ -78,3 +78,30 @@
     (let [session (test-session "http://example.com/login.html")
           result (cavy/press session "Whatever")]
       (is (unchanged result session)))))
+
+(deftest form-submit
+  (testing "all form fields"
+    (let [result (-> (test-session "http://example.com/form2.html")
+                     (cavy/fill-in "Field 1" "Text Box Test")
+                     (cavy/fill-in "Password" "This is my password")
+                     (cavy/check "Selected")
+                     (cavy/fill-in "Description" "Lorem ipsum dolor sit amet...")
+                     (cavy/select "Single Select" "Option 3")
+                     (cavy/select "Multi Select" "Option 2" "Option 4" "Option 6")
+                     (cavy/choose "Select One" "Option 2")
+                     (cavy/choose "radiogroup2" "Option 3")
+                     (cavy/press "No"))
+          request @(result :last-request)
+          params (-> request :options :form-params)]
+      (is (not (nil? request)))
+      (is (not (nil? params)))
+      (is (= ["Testing Hidden Fields"] (params :hidden)))
+      (is (= ["Text Box Test"] (params :field1)))
+      (is (= ["This is my password"] (params :password)))
+      (is (= ["Selected"] (params :checkbox)))
+      (is (= ["Lorem ipsum dolor sit amet..."] (params :description)))
+      (is (= ["3"] (params :singleselect)))
+      (is (= ["2" "4" "6"] (params :multiselect)))
+      (is (= ["2"] (params :radiogroup1)))
+      (is (= ["3"] (params :radiogroup2)))
+      (is (= ["No"] (params :action))))))
