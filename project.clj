@@ -1,4 +1,4 @@
-(defproject cavy "0.0.1-SNAPSHOT"
+(defproject cavy "0.1"
   :description "Clojure HTTP client for UI automation and testing."
   :url "https://github.com/tokenshift/cavy"
   :license {:name "The MIT License (MIT)"
