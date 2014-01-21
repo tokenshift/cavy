@@ -101,7 +101,7 @@
       (is (= ["Selected"] (params :checkbox)))
       (is (= ["Lorem ipsum dolor sit amet..."] (params :description)))
       (is (= ["3"] (params :singleselect)))
-      (is (= ["2" "4" "6"] (params :multiselect)))
+      (is (= (hash-set "2" "4" "6") (apply hash-set (params :multiselect))))
       (is (= ["2"] (params :radiogroup1)))
       (is (= ["3"] (params :radiogroup2)))
       (is (= ["No"] (params :action))))))
