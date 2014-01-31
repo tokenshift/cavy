@@ -58,6 +58,6 @@
   [session]
   (loop [session session]
     (let [{status :status {{location "location"} :headers} :response} session]
-      (if (and location (contains? #{"301" "302" "303" "307"} status))
+      (if (and location (contains? #{301 302 303 307} status))
         (recur (request session :get (absolute-url session location)))
         session))))

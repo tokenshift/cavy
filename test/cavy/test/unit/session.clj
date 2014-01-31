@@ -28,5 +28,24 @@
                        (session/request :get "http://whatever.com")))]
       (is (= 200 (-> result :response :status)))
       (is (.contains (-> result :response :body) "Got here"))))
-  (testing "Follows multiple redirects")
-  (testing "Follows a maximum of 5 redirects"))
+  (testing "Follows multiple redirects"
+    (let [result (-> (session/create :client (recorded-client (redirect 1)
+                                                              (redirect 2)
+                                                              (redirect 3)
+                                                              final))
+                     (session/request :get "http://whatever.com")
+                     (session/follow-redirects))]
+      (is (= 200 (-> result :response :status)))
+      (is (.contains (-> result :response :body) "Got here"))))
+  (testing "Follows a maximum of 5 redirects"
+    (let [result (-> (session/create :client (recorded-client (redirect 1)
+                                                              (redirect 2)
+                                                              (redirect 3)
+                                                              (redirect 4)
+                                                              (redirect 5)
+                                                              (redirect 6)
+                                                              final))
+                     (session/request :get "http://whatever.com")
+                     (session/follow-redirects))]
+      (is (= 302 (-> result :response :status)))
+      (is (= "/page6" (get-in result [:response :headers "Location"]))))))
