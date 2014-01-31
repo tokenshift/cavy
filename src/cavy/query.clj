@@ -95,7 +95,11 @@
 
 ;; Adds the value of the specified form field to a map.
 (defmulti assoc-field-value
-  (fn [fields field] [(-> field :tag) (-> field :attrs :type)]))
+  (fn [fields field]
+    [(-> field :tag)
+     (if (= (-> field :tag) :input)
+       (-> field :attrs :type)
+       nil)]))
 
 (defmethod assoc-field-value [:input "checkbox"]
   [fields field]
