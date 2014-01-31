@@ -7,6 +7,13 @@
             [net.cgrand.enlive-html :as html])
   (:use cavy.util))
 
+(defn absolute-url
+  "Constructs an absolute URL given the current location and a relative path."
+  [session & path]
+  (if (session :location)
+    (urly/resolve (session :location) (str/join "/" path))
+    (str/join "/" path)))
+
 (defn create
   "Creates a new session."
   [& options]
@@ -30,6 +37,11 @@
   [response]
   (html/html-snippet (response :body)))
 
+(defn redirect
+  "Returns the redirect location (e.g. from a 302) for the session."
+  [session]
+  nil)
+
 (defn request
   "Sends an HTTP request to the specified URL."
   [session method url & options]
@@ -41,9 +53,11 @@
            :status (:status response)
            :page (when (is-html response) (parse-html response)))))
 
-(defn absolute-url
-  "Constructs an absolute URL given the current location and a relative path."
-  [session & path]
-  (if (session :location)
-    (urly/resolve (session :location) (str/join "/" path))
-    (str/join "/" path)))
+(defn follow-redirects
+  "Follows a series of redirects until the session resolves."
+  [session]
+  (loop [session session]
+    (let [{status :status {{location "location"} :headers} :response} session]
+      (if (and location (contains? #{"301" "302" "303" "307"} status))
+        (recur (request session :get (absolute-url session location)))
+        session))))

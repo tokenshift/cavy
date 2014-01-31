@@ -8,9 +8,10 @@
 (defn visit
   "Navigates to the specified URL."
   [session url & params]
-  (session/request session
-                   :get (session/absolute-url session url)
-                   :query-params (apply util/to-query-params params)))
+  (session/follow-redirects
+    (session/request session
+                     :get (session/absolute-url session url)
+                     :query-params (apply util/to-query-params params))))
 
 (defn session
   "Creates a new Cavy session."
@@ -34,8 +35,9 @@
         method (query/get-form-method form)
         action (get-in form [:attrs :action])]
     (if (and form button fields method action)
-      (session/request session method (session/absolute-url session action)
-                       :form-params fields)
+      (session/follow-redirects
+        (session/request session method (session/absolute-url session action)
+                         :form-params fields))
       session)))
 
 (defn fill-in
