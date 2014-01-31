@@ -14,10 +14,13 @@
     (urly/resolve (session :location) (str/join "/" path))
     (str/join "/" path)))
 
+(def default-options
+  {:max-redirects 5})
+
 (defn create
   "Creates a new session."
   [& options]
-  (let [options (apply hash-map options)
+  (let [options (merge default-options (apply hash-map options))
         location (:url options)
         client (or (:client options) (http/create-client))]
     {:options options
@@ -56,8 +59,11 @@
 (defn follow-redirects
   "Follows a series of redirects until the session resolves."
   [session]
-  (loop [session session]
+  (loop [session session count (-> session :options :max-redirects)]
     (let [{status :status {{location "location"} :headers} :response} session]
-      (if (and location (contains? #{301 302 303 307} status))
-        (recur (request session :get (absolute-url session location)))
+      (if (and location
+               (> count 0)
+               (contains? #{301 302 303 307} status))
+        (recur (request session :get (absolute-url session location))
+               (- count 1))
         session))))

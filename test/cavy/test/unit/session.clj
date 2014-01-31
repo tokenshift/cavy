@@ -48,4 +48,4 @@
                      (session/request :get "http://whatever.com")
                      (session/follow-redirects))]
       (is (= 302 (-> result :response :status)))
-      (is (= "/page6" (get-in result [:response :headers "Location"]))))))
+      (is (= "/page6" (get-in result [:response :headers "location"]))))))
