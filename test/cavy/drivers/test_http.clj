@@ -37,4 +37,21 @@
         (is (= 201 (status result)))
         (is (= "Hello!" (text result)))
         (is (= "http://example.com/some/fake/path?hello=goodbye" (url result))))))
-  (testing "URL after redirects"))
+  (testing "URL after redirects"
+    (with-fake-routes
+      {"http://example.com/page1"
+       (fn [r] {:status 302
+                :headers { "Location" "http://example.com/page2" }
+                :body ""})
+       "http://example.com/page2"
+       (fn [r] {:status 302
+                :headers { "Location" "http://example.com/page3" }
+                :body ""})
+       "http://example.com/page3"
+       (fn [r] {:status 200
+                :body "Done!"})}
+      (let [result (-> (session cavy.drivers/http)
+                       (visit "http://example.com/page1"))]
+        (is (= 200 (status result)))
+        (is (= "http://example.com/page3" (url result)))
+        (is (= "Done!" (body result)))))))

@@ -10,6 +10,7 @@
   cavy/Session
   (visit [this url]
     (let [response (http/get url)
+          url (or (last (:trace-redirects response)) url)
           page (-> response :body enlive/html-snippet first)]
       (-> this
           (assoc ::response response)
