@@ -7,7 +7,7 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [clj-http "0.7.8"]
                  [clj-http-fake "1.0.1"]
-                 [com.cemerick/url "0.1.1"]
                  [enlive "1.1.5"]
                  [javax.servlet/servlet-api "2.5"]
-                 [ring "1.3.2"]])
+                 [ring "1.3.2"]
+                 [uri "1.1.0"]])

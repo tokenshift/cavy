@@ -33,7 +33,7 @@
         (is (= "<div>Hello!</div>" (body result)))
         (is (= {:foo "Bar"} (headers result)))
         (is (= "/some/fake/path" (path result)))
-        (is (= {"hello" "goodbye"} (query result)))
+        (is (= "hello=goodbye" (query result)))
         (is (= 201 (status result)))
         (is (= "Hello!" (text result)))
         (is (= "http://example.com/some/fake/path?hello=goodbye" (url result))))))
@@ -55,3 +55,17 @@
         (is (= 200 (status result)))
         (is (= "http://example.com/page3" (url result)))
         (is (= "Done!" (body result)))))))
+
+(deftest test-posting-login-form
+  (let [post (atom nil)]
+    (with-fake-routes
+      {"http://example.com/login"
+       {:get (fn [r] {:status 200 :body (slurp "test/cavy/test-pages/login.html")})
+        :post (fn [r] (reset! post r) {:status 200 :body ""})}}
+      (let [result (-> (session cavy.drivers/http)
+                       (visit "http://example.com/login")
+                       (press "Login"))]
+        (is (not (nil? @post)))
+        (is (= :post (:request-method @post)))
+        (is (= "example.com" (:server-name @post)))
+        (is (= "/login" (:uri @post)))))))
